@@ -30,5 +30,18 @@ export const showAllNotes = () =>({
 export const showFinishedNotes = () =>({
     type: "SHOW-FINISHED"})
 
- export const showUnfinishedNotes = () =>({
+export const showUnfinishedNotes = () =>({
     type: "SHOW-UNFINISHED"})
+
+export const togglePercentage = (id) =>({
+    type: "TOGGLE-PERCENTAGE",
+    payload: id})
+
+export const toggleImportant = (id) =>({
+    type: "TOGGLE-IMPORTANT",
+    payload: id})
+
+export const toggleEditMode = (id) =>({
+    type: "TOGGLE-EDITMODE",
+    payload: id})
+

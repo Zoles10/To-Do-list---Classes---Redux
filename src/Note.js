@@ -1,39 +1,21 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { deleteFromNoteArray, doneNoteArray, editNoteArray } from "./actions";
+import { deleteFromNoteArray, doneNoteArray, editNoteArray, togglePercentage, toggleImportant, toggleEditMode } from "./actions";
 import Slider from "@material-ui/core/Slider";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from "@material-ui/core/styles";
 
 const styles = {
   root: {
-    width: 150
-  }
+    width: 150,
+  },
 };
 
 class Note extends Component {
-  
   valueLabelFormat = (value) => `${value}%`;
 
   state = {
-    editMode: false,
-    percentage: false,
-    currentEditedNote: "",
-  };
-
-  toggleEditMode = () => {
-    console.log("here");
-    this.setState((prevState) => {
-      return { editMode: !prevState.editMode };
-    });
-  };
-
-  togglePercentage = () => {
-    console.log("here");
-      this.setState((prevState) => {
-        return {percentage: !prevState.percentage}
-      });
-      this.toggleEditMode();
+    currentEditedNote: this.props.text,
   };
 
   saveAndExit = () => {
@@ -41,13 +23,19 @@ class Note extends Component {
       this.props.editNoteArray(this.props.id, this.state.currentEditedNote);
     }
 
-    this.toggleEditMode();
-    console.log("here");
+    this.props.toggleEditMode(this.props.id);
   };
+
+  handleToggleImportant = () =>{
+    this.props.toggleImportant(this.props.id);
+  }
+
+  handleTogglePercentage = () =>{
+    this.props.togglePercentage(this.props.id);
+  }
 
   handleCurrentEditedNote = (event) => {
     this.setState({ currentEditedNote: event.target.value });
-    console.log(this.state.currentEditedNote);
   };
 
   handleDeleteFromNoteArray = () => {
@@ -62,10 +50,22 @@ class Note extends Component {
     const { classes } = this.props;
 
     return (
-      <div className="note">
+      <div
+        className="note"
+        style={
+          this.props.important
+            ? { backgroundColor: "#ffc6c4" }
+            : { backgroundColor: "white" }
+        }
+      >
+        {/* importance toggle button */}
+        {this.props.editMode && (
+          <button className="note--important"
+          onClick={this.handleToggleImportant}>❗</button>
+        )}
 
         {/* text and edit input */}
-        {!this.state.editMode ? (
+        {!this.props.editMode ? (
           <p
             className="note--text"
             style={{
@@ -80,14 +80,18 @@ class Note extends Component {
             className="note--editInput"
             onChange={this.handleCurrentEditedNote}
             value={this.state.currentEditedNote}
+            placeholder={this.state.currentEditedNote}
           ></input>
         )}
 
         {/* percentage toggle */}
-        {this.state.editMode && <button onClick={this.togglePercentage}>%</button>}
+        {this.props.editMode && (
+          <button className="note--percentage"
+          onClick={this.handleTogglePercentage}>%</button>
+        )}
 
         {/* done btn */}
-        {!this.props.done && !this.state.editMode && (
+        {!this.props.done && !this.props.editMode && (
           <button className="note--done" onClick={this.handleDoneNoteArray}>
             ✅
           </button>
@@ -96,7 +100,7 @@ class Note extends Component {
         {/* save and edit btn  */}
         {!this.props.done && (
           <button className="note--editAndSave" onClick={this.saveAndExit}>
-            {!this.state.editMode ? "🖊" : "💾"}
+            {!this.props.editMode ? "🖊" : "💾"}
           </button>
         )}
 
@@ -107,21 +111,22 @@ class Note extends Component {
         >
           ❌
         </button>
-        {this.state.percentage && <Slider
-              classes={{
-                   root: classes.root
+        {this.props.percentage && (
+          <Slider
+            classes={{
+              root: classes.root,
             }}
             className="slider"
             aria-label="Percentage done"
             defaultValue={0}
-            
             getAriaValueText={this.valueLabelFormat}
             valueLabelDisplay="on"
             step={5}
             min={0}
             max={100}
-          />}
-        </div>
+          />
+        )}
+      </div>
     );
   }
 }
@@ -136,8 +141,14 @@ const mapDispatchToProps = (dispatch) =>
       deleteFromNoteArray,
       editNoteArray,
       doneNoteArray,
+      togglePercentage, 
+      toggleImportant,
+      toggleEditMode
     },
     dispatch
   );
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Note));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(Note));

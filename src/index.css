@@ -109,16 +109,14 @@ body{
     border-bottom: 1px solid rgb(0, 0, 0);
 }
 
-.note--delete{
+.note--delete, .note--important, .note--percentage{
     border-radius: 10px;
     padding: 5px;
     border: none;
     margin: 6px;
 }
 
-.note--editIntput{
-    height: 10px;
-}
+
 
 .note--editAndSave{
     border-radius: 10px;
@@ -134,12 +132,6 @@ body{
     margin: 6px;
 }
 
-.hr{
-    height: 2px;
-    border-top: 1px solid red !important;
-    margin: 20px 0;
-    order: 1;
-}
 
 .slider{
     width: 50%;

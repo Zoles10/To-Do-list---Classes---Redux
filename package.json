@@ -40,7 +40,6 @@
     ]
   },
   "homepage": "https://zoles10.github.io/To-Do-list---Classes---Redux/",
- 
   "devDependencies": {
     "gh-pages": "^5.0.0"
   }
