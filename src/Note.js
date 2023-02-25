@@ -2,10 +2,22 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { deleteFromNoteArray, doneNoteArray, editNoteArray } from "./actions";
+import Slider from "@material-ui/core/Slider";
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = {
+  root: {
+    width: 150
+  }
+};
 
 class Note extends Component {
+  
+  valueLabelFormat = (value) => `${value}%`;
+
   state = {
     editMode: false,
+    percentage: false,
     currentEditedNote: "",
   };
 
@@ -14,6 +26,14 @@ class Note extends Component {
     this.setState((prevState) => {
       return { editMode: !prevState.editMode };
     });
+  };
+
+  togglePercentage = () => {
+    console.log("here");
+      this.setState((prevState) => {
+        return {percentage: !prevState.percentage}
+      });
+      this.toggleEditMode();
   };
 
   saveAndExit = () => {
@@ -39,6 +59,8 @@ class Note extends Component {
   };
 
   render() {
+    const { classes } = this.props;
+
     return (
       <div className="note">
 
@@ -61,6 +83,9 @@ class Note extends Component {
           ></input>
         )}
 
+        {/* percentage toggle */}
+        {this.state.editMode && <button onClick={this.togglePercentage}>%</button>}
+
         {/* done btn */}
         {!this.props.done && !this.state.editMode && (
           <button className="note--done" onClick={this.handleDoneNoteArray}>
@@ -82,7 +107,20 @@ class Note extends Component {
         >
           ❌
         </button>
-
+        {this.state.percentage && <Slider
+              classes={{
+                   root: classes.root
+            }}
+            className="slider"
+            aria-label="Percentage done"
+            defaultValue={0}
+            
+            getAriaValueText={this.valueLabelFormat}
+            valueLabelDisplay="on"
+            step={5}
+            min={0}
+            max={100}
+          />}
         </div>
     );
   }
@@ -102,4 +140,4 @@ const mapDispatchToProps = (dispatch) =>
     dispatch
   );
 
-export default connect(mapStateToProps, mapDispatchToProps)(Note);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Note));
