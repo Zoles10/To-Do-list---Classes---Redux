@@ -13,10 +13,13 @@ const styles = {
 
 class Note extends Component {
   valueLabelFormat = (value) => `${value}%`;
+  
 
   state = {
     currentEditedNote: this.props.text,
   };
+
+  
 
   saveAndExit = () => {
     if (this.state.currentEditedNote) {
@@ -48,6 +51,7 @@ class Note extends Component {
 
   render() {
     const { classes } = this.props;
+    
 
     return (
       <div

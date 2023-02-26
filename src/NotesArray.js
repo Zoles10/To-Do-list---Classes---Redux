@@ -5,7 +5,10 @@ import { bindActionCreators } from "redux";
 import { addToNoteArray } from "./actions";
 
 class NoteArray extends Component {
+
+
   render() {
+    
     const array = this.props.noteArray
       .filter((note) => note.show)
       .map((note) => (
