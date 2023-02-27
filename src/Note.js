@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { deleteFromNoteArray, doneNoteArray, editNoteArray, togglePercentage, toggleImportant, toggleEditMode } from "./actions";
+import { deleteFromNoteArray, doneNoteArray, editNoteArray, togglePercentage, toggleImportant, toggleEditMode, updateCurrentNote } from "./actions";
 import Slider from "@material-ui/core/Slider";
 import { withStyles } from "@material-ui/core/styles";
 
@@ -48,6 +48,8 @@ class Note extends Component {
   handleDoneNoteArray = () => {
     this.props.doneNoteArray(this.props.id);
   };
+
+  
 
   render() {
     const { classes } = this.props;
@@ -147,7 +149,8 @@ const mapDispatchToProps = (dispatch) =>
       doneNoteArray,
       togglePercentage, 
       toggleImportant,
-      toggleEditMode
+      toggleEditMode,
+      updateCurrentNote
     },
     dispatch
   );
