@@ -1,52 +1,35 @@
-import React, { Component } from "react";
+import React from "react";
 import Note from "./Note";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { addToNoteArray } from "./actions";
+import { useSelector } from "react-redux";
 
-class NoteArray extends Component {
+const NoteArray = () => {
+  // Access Redux state using useSelector
+  const noteArray = useSelector((state) => state.noteArray);
 
+  const array = noteArray
+    .filter((note) => note.show)
+    .map((note) => (
+      <Note
+        text={note.text}
+        key={note.id}
+        id={note.id}
+        done={note.done}
+        editMode={note.editMode}
+        important={note.important}
+        percentage={note.percentage}
+      />
+    ));
 
-  render() {
-    
-    const array = this.props.noteArray
-      .filter((note) => note.show)
-      .map((note) => (
-        <Note
-          text={note.text}
-          key={note.id}
-          id={note.id}
-          done={note.done}
-          editMode={note.editMode}
-          important={note.important}
-          percentage={note.percentage}
-        />
-      ));
-    return (
-      <div className="noteArray">
-        {!array[0] && (
-          <h1 className="noteArray--h1" style={{ color: "#d3d3d3" }}>
-            Add a note...
-          </h1>
-        )}
-        {array}
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = (state) => ({
-  // map your Redux state to props
-  // e.g. counter: state.counter
-  noteArray: state.noteArray,
-});
-
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(
-    {
-      addToNoteArray,
-    },
-    dispatch
+  return (
+    <div className="noteArray">
+      {!array[0] && (
+        <h1 className="noteArray--h1" style={{ color: "#d3d3d3" }}>
+          Add a note...
+        </h1>
+      )}
+      {array}
+    </div>
   );
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(NoteArray);
+export default NoteArray;

@@ -1,6 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   showAllNotes,
   showFinishedNotes,
@@ -10,71 +9,61 @@ import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
-class FilterSection extends Component {
-  state = {
-    anchorEl: null,
-    selectedOption: "ALL",
+const FilterSection = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("ALL");
+  const dispatch = useDispatch();
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
-  render() {
-    const { anchorEl, selectedOption } = this.state;
-    return (
-      <div className="filterSection">
+  const handleMenuItemClick = (filterOption) => {
+    setSelectedOption(filterOption);
+    setAnchorEl(null);
+
+    switch (filterOption) {
+      case "ALL":
+        dispatch(showAllNotes());
+        break;
+      case "FINISHED":
+        dispatch(showFinishedNotes());
+        break;
+      case "UNFINISHED":
+        dispatch(showUnfinishedNotes());
+        break;
+      default:
+        break;
+    }
+  };
+
+  return (
+    <div className="filterSection">
       <h4>Filter:</h4>
-        <Button
-          aria-controls="simple-menu"
-          aria-haspopup="true"
-          onClick={(event) => this.setState({ anchorEl: event.currentTarget })}
-        >
-          {selectedOption}
-        </Button>
-        <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={() => this.setState({ anchorEl: null })}
-        >
-          <MenuItem
-            onClick={() => {
-              this.setState({ selectedOption: "ALL", anchorEl: null });
-              this.props.showAllNotes();
-            }}
-          >
-            ALL
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              this.setState({ selectedOption: "FINISHED", anchorEl: null });
-              this.props.showFinishedNotes();
-            }}
-          >
-            FINISHED
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              this.setState({ selectedOption: "UNFINISHED", anchorEl: null });
-              this.props.showUnfinishedNotes();
-            }}
-          >
-            UNFINISHED
-          </MenuItem>
-        </Menu>
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(
-    {
-      showAllNotes,
-      showFinishedNotes,
-      showUnfinishedNotes,
-    },
-    dispatch
+      <Button
+        aria-controls="simple-menu"
+        aria-haspopup="true"
+        onClick={(event) => setAnchorEl(event.currentTarget)}
+      >
+        {selectedOption}
+      </Button>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={() => handleMenuItemClick("ALL")}>ALL</MenuItem>
+        <MenuItem onClick={() => handleMenuItemClick("FINISHED")}>
+          FINISHED
+        </MenuItem>
+        <MenuItem onClick={() => handleMenuItemClick("UNFINISHED")}>
+          UNFINISHED
+        </MenuItem>
+      </Menu>
+    </div>
   );
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(FilterSection);
+export default FilterSection;

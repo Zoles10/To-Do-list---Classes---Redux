@@ -1,61 +1,45 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import React, { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { addToNoteArray, updateCurrentNote } from "./actions";
 
-class CurrentNote extends Component {
-  handleChange = (event) => {
-    this.props.updateCurrentNote(event.target.value);
-  };
+const CurrentNote = () => {
+  const dispatch = useDispatch();
+  const currentNote = useSelector((state) => state.currentNote);
 
-  handleAddToNoteArray = () => {
-    this.props.addToNoteArray(this.props.currentNote.text);
-    this.props.updateCurrentNote("");
-  };
-
-  handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      this.handleAddToNoteArray();
-    }
-    
-  };
-
-  
-
-  render() {
-    return (
-      <div className="currentNote">
-        <input
-          className="currentNote--input"
-          onChange={this.handleChange}
-          onKeyDown={this.handleKeyDown}
-          value={this.props.currentNote.text}
-        ></input>
-        <button
-          className="currentNote--button"
-          onClick={this.handleAddToNoteArray}
-        >
-          ADD
-        </button>
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = (state) => ({
-  // map your Redux state to props
-  // e.g. counter: state.counter
-  currentNote: state.currentNote,
-  noteArray: state.noteArray,
-});
-
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(
-    {
-      updateCurrentNote,
-      addToNoteArray,
+  const handleChange = useCallback(
+    (event) => {
+      dispatch(updateCurrentNote(event.target.value));
     },
-    dispatch
+    [dispatch]
   );
 
-export default connect(mapStateToProps, mapDispatchToProps)(CurrentNote);
+  const handleAddToNoteArray = useCallback(() => {
+    dispatch(addToNoteArray(currentNote.text));
+    dispatch(updateCurrentNote(""));
+  }, [currentNote.text, dispatch]);
+
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === "Enter") {
+        handleAddToNoteArray();
+      }
+    },
+    [handleAddToNoteArray]
+  );
+
+  return (
+    <div className="currentNote">
+      <input
+        className="currentNote--input"
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        value={currentNote.text}
+      />
+      <button className="currentNote--button" onClick={handleAddToNoteArray}>
+        ADD
+      </button>
+    </div>
+  );
+};
+
+export default CurrentNote;
